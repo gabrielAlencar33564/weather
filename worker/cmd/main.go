@@ -11,7 +11,7 @@ func main() {
 
 	cfg := config.Load()
 
-	consumer := infra.NewRabbitMQConsumer(cfg.RabbitMQURL, cfg.QueueName)
+	consumer := infra.NewRabbitMQConsumer(cfg.RabbitMQURL, cfg.QueueName, cfg.APIURL)
 
 	consumer.Start()
 }

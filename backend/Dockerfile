@@ -6,4 +6,10 @@ RUN apk update && apk upgrade
 
 RUN npm i -g @nestjs/cli
 
-CMD ["tail", "-f", "/dev/null"]
+COPY package.json ./
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "start:dev"]
