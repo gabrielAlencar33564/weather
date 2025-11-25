@@ -6,7 +6,9 @@ async function bootstrap() {
 
   app.enableCors();
 
+  app.setGlobalPrefix('api');
+
   await app.listen(3000);
-  console.log(`🚀 Servidor rodando em: http://localhost:3000`);
+  console.log(`🚀 Servidor rodando em: http://localhost:3000/api`);
 }
 bootstrap();

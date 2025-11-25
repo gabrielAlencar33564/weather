@@ -25,12 +25,26 @@ export class AiAnalysis {
   severity: string;
 }
 
+export class Location {
+  @Prop()
+  lat: string;
+
+  @Prop()
+  lon: string;
+}
+
 export class Metadata {
   @Prop()
   city: string;
 
   @Prop()
   source: string;
+
+  @Prop()
+  timestamp: number;
+
+  @Prop({ type: Location, _id: false })
+  location: Location;
 }
 
 @Schema({ timestamps: true })
@@ -43,6 +57,9 @@ export class WeatherLog {
 
   @Prop({ type: Metadata, _id: false })
   metadata: Metadata;
+
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export const WeatherSchema = SchemaFactory.createForClass(WeatherLog);
