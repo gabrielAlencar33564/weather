@@ -6,13 +6,20 @@ type WeatherData struct {
 		Humidity int `json:"humidity"`
 		Condition int `json:"condition_code"`
 	} `json:"sensor_data"`
+
 	AiAnalysis struct {
 		Insight string `json:"insight"`
 		Severity string `json:"severity"`
 	} `json:"ai_analysis"`
+
 	Metadata struct {
 		City string `json:"city"`
 		Source string `json:"source"`
 		Timestamp float64 `json:"timestamp"`
+		
+		Location struct {
+			Lat string `json:"lat"`
+			Lon string `json:"lon"`
+		} `json:"location"`
 	} `json:"metadata"`
 }

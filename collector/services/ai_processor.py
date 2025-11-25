@@ -1,5 +1,5 @@
 import time
-from config.settings import CITY_LAT, CITY_LON
+from config.settings import CITY_LAT, CITY_LON, CITY_NAME
 
 def generate_insights(data):
     if not data or 'current' not in data:
@@ -43,6 +43,7 @@ def generate_insights(data):
         },
         "metadata": {
             "source": "Open-Meteo",
+            "city": CITY_NAME,
             "location": {"lat": CITY_LAT, "lon": CITY_LON},
             "timestamp": time.time()
         }
