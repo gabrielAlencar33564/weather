@@ -94,7 +94,7 @@ func (r *RabbitMQConsumer) postToAPI(data domain.WeatherData) error {
 		return err
 	}
 
-	resp, err := http.Post(r.ApiURL+"/weather", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(r.ApiURL+"/api/weather", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err
 	}
