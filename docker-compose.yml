@@ -71,6 +71,9 @@ services:
       - mongo
     environment:
       MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/gdash?authSource=admin
+      DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL}
+      DEFAULT_ADMIN_PASS: ${DEFAULT_ADMIN_PASS}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - "${API_PORT}:3000"
     networks:

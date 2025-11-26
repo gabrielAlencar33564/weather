@@ -66,6 +66,10 @@ export class UsersService implements OnModuleInit {
     return user;
   }
 
+  async findByEmail(email: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ email }).select('+password').exec();
+  }
+
   async update(
     id: string,
     updateUserDto: Partial<CreateUserDto>,
