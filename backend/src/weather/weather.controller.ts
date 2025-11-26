@@ -7,6 +7,7 @@ import {
   Res,
   Query,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { WeatherService } from './weather.service';
 import { CreateWeatherDto } from './dto/create-weather.dto';
@@ -25,10 +26,10 @@ export class WeatherController {
   @UseGuards(JwtAuthGuard)
   @Get('logs')
   async findAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('limit', ParseIntPipe) limit?: number,
+    @Query('offset', ParseIntPipe) offset?: number,
   ) {
-    return this.weatherService.findAll(Number(page), Number(limit));
+    return this.weatherService.findAll(limit, offset);
   }
 
   @UseGuards(JwtAuthGuard)

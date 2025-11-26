@@ -55,8 +55,23 @@ export class UsersService implements OnModuleInit {
     return createdUser.save();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(limit: number = 10, offset: number = 0) {
+    const data = await this.userModel.find().limit(limit).skip(offset).exec();
+
+    const total = await this.userModel.countDocuments();
+
+    const currentPage = Math.floor(offset / limit) + 1;
+
+    return {
+      data,
+      meta: {
+        total,
+        offset: offset,
+        limit: limit,
+        last_page: Math.ceil(total / limit),
+        current_page: currentPage,
+      },
+    };
   }
 
   async findOne(id: string): Promise<User> {

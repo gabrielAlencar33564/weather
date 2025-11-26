@@ -17,25 +17,26 @@ export class WeatherService {
     return createdLog.save();
   }
 
-  async findAll(page: number = 1, limit: number = 10) {
-    const skip = (page - 1) * limit;
-
+  async findAll(limit: number = 10, offset: number = 0) {
     const data = await this.weatherModel
       .find()
       .sort({ createdAt: -1 })
-      .skip(skip)
+      .skip(offset)
       .limit(limit)
       .exec();
 
     const total = await this.weatherModel.countDocuments();
 
+    const currentPage = Math.floor(offset / limit) + 1;
+
     return {
       data,
       meta: {
         total,
-        page,
-        limit,
+        offset: offset,
+        limit: limit,
         last_page: Math.ceil(total / limit),
+        current_page: currentPage,
       },
     };
   }
