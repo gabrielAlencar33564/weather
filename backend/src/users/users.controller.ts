@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { UserRole } from './user.schema';
 import { UsersService } from './users.service';
@@ -28,10 +27,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Get()
-  findAll(
-    @Query('limit', ParseIntPipe) limit?: number,
-    @Query('offset', ParseIntPipe) offset?: number,
-  ) {
+  findAll(@Query('limit') limit?: number, @Query('offset') offset?: number) {
     return this.usersService.findAll(limit, offset);
   }
 
