@@ -3,6 +3,11 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
 @Schema({
   timestamps: true,
   toJSON: {
@@ -25,6 +30,9 @@ export class User {
 
   @Prop({ required: true })
   password: string;
+
+  @Prop({ required: true, enum: UserRole, default: UserRole.USER })
+  role: UserRole;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

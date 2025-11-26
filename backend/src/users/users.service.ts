@@ -30,6 +30,7 @@ export class UsersService implements OnModuleInit {
         name: 'Admin GDASH',
         email: adminEmail,
         password: hashedPassword,
+        role: 'admin',
       });
       console.log(UserLoggerHelper.SEED_ADMIN_SUCCESS);
     }
