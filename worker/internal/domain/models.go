@@ -1,25 +1,15 @@
 package domain
 
-type WeatherData struct {
-	SensorData struct {
-		Temperature float64 `json:"temperature"`
-		Humidity int `json:"humidity"`
-		Condition int `json:"condition_code"`
-	} `json:"sensor_data"`
-
-	AiAnalysis struct {
-		Insight string `json:"insight"`
-		Severity string `json:"severity"`
-	} `json:"ai_analysis"`
-
-	Metadata struct {
-		City string `json:"city"`
-		Source string `json:"source"`
-		Timestamp float64 `json:"timestamp"`
-		
-		Location struct {
-			Lat string `json:"lat"`
-			Lon string `json:"lon"`
-		} `json:"location"`
-	} `json:"metadata"`
+type WeatherPayload struct {
+	Location struct {
+		Lat string `json:"lat"`
+		Lon string `json:"lon"`
+	} `json:"location"`
+	Timestamp string `json:"timestamp"`
+	Temperature float64 `json:"temperature"`
+	Humidity int `json:"humidity"`
+	WindSpeed float64 `json:"wind_speed"`
+	ConditionCode int `json:"condition_code"`
+	RainProbability int `json:"rain_probability"`
+	City string `json:"city"`
 }

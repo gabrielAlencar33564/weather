@@ -12,9 +12,10 @@ import (
 )
 
 type RabbitMQConsumer struct {
-	ConnURL string
-	QueueName string
-	ApiURL string 
+	ConnURL    string
+	QueueName  string
+	ApiURL     string
+	httpClient *http.Client
 }
 
 func NewRabbitMQConsumer(url, queue, apiUrl string) *RabbitMQConsumer {
@@ -22,6 +23,9 @@ func NewRabbitMQConsumer(url, queue, apiUrl string) *RabbitMQConsumer {
 		ConnURL:   url,
 		QueueName: queue,
 		ApiURL:    apiUrl,
+		httpClient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
 	}
 }
 
@@ -32,10 +36,10 @@ func (r *RabbitMQConsumer) Start() {
 	for {
 		conn, err = amqp.Dial(r.ConnURL)
 		if err == nil {
-			log.Println("✅ [Go] Conectado ao RabbitMQ!")
+			log.Println("Conectado ao RabbitMQ")
 			break
 		}
-		log.Printf("⏳ [Go] Aguardando RabbitMQ... (%s)", err)
+		log.Printf("Aguardando RabbitMQ... (%s)", err)
 		time.Sleep(5 * time.Second)
 	}
 	defer conn.Close()
@@ -60,24 +64,23 @@ func (r *RabbitMQConsumer) Start() {
 		log.Fatal(err)
 	}
 
-	log.Printf("🐹 [Go] Worker ouvindo fila: %s e enviando para %s", q.Name, r.ApiURL)
+	log.Printf("Worker ouvindo fila: %s", q.Name)
 
 	forever := make(chan struct{})
 
 	go func() {
 		for d := range msgs {
-			var data domain.WeatherData
-			if err := json.Unmarshal(d.Body, &data); err != nil {
-				log.Printf("❌ JSON Inválido. Descartando.")
+			var payload domain.WeatherPayload
+			if err := json.Unmarshal(d.Body, &payload); err != nil {
+				log.Printf("JSON Inválido: %v", err)
 				d.Nack(false, false)
 				continue
 			}
 
-			if err := r.postToAPI(data); err != nil {
-				log.Printf("⚠️ Falha ao enviar para API: %v. Devolvendo p/ fila...", err)
-
-				d.Nack(false, true) 
-				time.Sleep(2 * time.Second) 
+			if err := r.postToAPI(payload); err != nil {
+				log.Printf("Falha ao enviar para API: %v", err)
+				d.Nack(false, true)
+				time.Sleep(2 * time.Second)
 				continue
 			}
 
@@ -88,31 +91,28 @@ func (r *RabbitMQConsumer) Start() {
 	<-forever
 }
 
-func (r *RabbitMQConsumer) postToAPI(data domain.WeatherData) error {
+func (r *RabbitMQConsumer) postToAPI(data domain.WeatherPayload) error {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	resp, err := http.Post(r.ApiURL+"/api/weather", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := r.httpClient.Post(r.ApiURL+"/api/weather", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 && resp.StatusCode != 201 {
-		return  boardCastError(resp.Status)
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return &HttpError{Status: resp.Status}
 	}
 
-	log.Printf("🚀 [Go -> Nest] Enviado: %s (Status: %s)", data.AiAnalysis.Insight, resp.Status)
+	log.Printf("Repassado: %s | %.1fC", data.City, data.Temperature)
 	return nil
 }
 
-func boardCastError(status string) error {
-    return &HttpError{Status: status}
+type HttpError struct {
+	Status string
 }
 
-type HttpError struct {
-    Status string
-}
 func (e *HttpError) Error() string { return "API retornou erro: " + e.Status }

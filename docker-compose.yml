@@ -43,6 +43,10 @@ services:
         condition: service_healthy
     environment:
       RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672/
+      CITY_NAME: ${CITY_NAME}
+      CITY_LAT: ${CITY_LAT}
+      CITY_LON: ${CITY_LON}
+      QUEUE_NAME: ${QUEUE_NAME}
     networks:
       - gdash-network
 
@@ -74,6 +78,7 @@ services:
       DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL}
       DEFAULT_ADMIN_PASS: ${DEFAULT_ADMIN_PASS}
       JWT_SECRET: ${JWT_SECRET}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
     ports:
       - "${API_PORT}:3000"
     networks:

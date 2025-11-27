@@ -18,7 +18,6 @@ export class WeatherController {
 
   @Post()
   async create(@Body() createWeatherDto: CreateWeatherDto) {
-    console.log('📥 [API] Recebido log do Worker Go');
     return this.weatherService.create(createWeatherDto);
   }
 
@@ -34,7 +33,7 @@ export class WeatherController {
   @UseGuards(JwtAuthGuard)
   @Get('insights')
   async getInsights() {
-    return this.weatherService.getInsights();
+    return this.weatherService.getSmartAnalysis('Palmeiras - BA');
   }
 
   @UseGuards(JwtAuthGuard)

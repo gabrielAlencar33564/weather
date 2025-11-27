@@ -29,7 +29,8 @@ class RabbitMQClient:
                     delivery_mode=2,  
                 )
             )
-            logger.info(f"📤 [RabbitMQ] Enviado: {payload['ai_analysis']['insight']}")
+
+            logger.info(f"📤 [RabbitMQ] Dados enviados: {payload.get('temperature', '?')}°C | {payload.get('timestamp')}")
             return True
 
         except Exception as e:

@@ -1,8 +1,7 @@
 import time
 import schedule
 import logging
-from services.weather_api import get_weather_data
-from services.ai_processor import generate_insights
+from services.weather_api import get_weather_data 
 from infra.messaging import RabbitMQClient
 
 logging.basicConfig(
@@ -12,26 +11,29 @@ logging.basicConfig(
 logger = logging.getLogger("Main")
 
 def job():
-    raw_data = get_weather_data()
+    weather_payload = get_weather_data()
     
-    if raw_data:
-        processed_data = generate_insights(raw_data)
+    if weather_payload:
+        mq = RabbitMQClient()
+        success = mq.publish(weather_payload)
         
-        if processed_data:
-            mq = RabbitMQClient()
-            mq.publish(processed_data)
+        if success:
+            logger.info("✅ Dados enviados para fila 'weather_data'")
+        else:
+            logger.warning("⚠️ Falha ao enviar para RabbitMQ")
 
 def start():
-    logger.info("🚀 Coletor Iniciado (Modularizado)")
+    logger.info("🚀 Coletor Iniciado (Modo: Producer Puro)")
     
     job()
     
-    schedule.every(2).minutes.do(job)
+    schedule.every(2).minutes.do(job) 
     
     while True:
         schedule.run_pending()
         time.sleep(1)
 
 if __name__ == "__main__":
-    time.sleep(5)
+    logger.info("⏳ Aguardando serviços de infraestrutura...")
+    time.sleep(10) 
     start()

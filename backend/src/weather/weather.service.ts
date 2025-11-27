@@ -1,20 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { WeatherLog, WeatherDocument } from './weather.schema';
 import * as ExcelJS from 'exceljs';
-import { WeatherStats } from './weather.interface';
+import { Weather, WeatherDocument } from './weather.schema';
 import { CreateWeatherDto } from './dto/create-weather.dto';
+import { WeatherAiService } from './weather-ai.service';
+import { WeatherLoggerHelper, WeatherMessagesHelper } from './helpers';
 
 @Injectable()
 export class WeatherService {
+  private readonly logger = new Logger(WeatherService.name);
+
   constructor(
-    @InjectModel(WeatherLog.name) private weatherModel: Model<WeatherDocument>,
+    @InjectModel(Weather.name) private weatherModel: Model<WeatherDocument>,
+    private weatherAiService: WeatherAiService,
   ) {}
 
-  async create(data: CreateWeatherDto): Promise<WeatherLog> {
-    const createdLog = new this.weatherModel(data);
-    return createdLog.save();
+  async create(data: CreateWeatherDto): Promise<Weather> {
+    this.logger.log(WeatherLoggerHelper.PROCESSING_DATA);
+
+    const { timestamp, ...rest } = data;
+    const createdLog = new this.weatherModel({
+      ...rest,
+      createdAt: new Date(timestamp),
+    });
+
+    const saved = await createdLog.save();
+
+    this.logger.debug(WeatherLoggerHelper.SAVED_SUCCESS);
+
+    return saved;
   }
 
   async findAll(limit: number = 10, offset: number = 0) {
@@ -26,8 +41,11 @@ export class WeatherService {
       .exec();
 
     const total = await this.weatherModel.countDocuments();
-
     const currentPage = Math.floor(offset / limit) + 1;
+
+    this.logger.debug(
+      WeatherLoggerHelper.FIND_ALL_DEBUG(currentPage, data.length),
+    );
 
     return {
       data,
@@ -37,62 +55,71 @@ export class WeatherService {
         limit: limit,
         last_page: Math.ceil(total / limit),
         current_page: currentPage,
+        message: WeatherMessagesHelper.FIND_ALL_SUCCESS,
       },
     };
   }
 
-  async getInsights() {
-    const stats = await this.weatherModel.aggregate<WeatherStats>([
-      {
-        $group: {
-          _id: null,
-          avgTemp: { $avg: '$sensor_data.temperature' },
-          avgHum: { $avg: '$sensor_data.humidity' },
-          maxTemp: { $max: '$sensor_data.temperature' },
-          minTemp: { $min: '$sensor_data.temperature' },
-          totalLogs: { $sum: 1 },
-        },
-      },
-    ]);
+  async getSmartAnalysis(city: string) {
+    this.logger.log(WeatherLoggerHelper.SEARCHING_HISTORY(city));
 
-    const data = stats[0] || {};
+    const history = await this.weatherModel
+      .find({ city })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .exec();
+
+    if (!history.length) {
+      this.logger.warn(WeatherLoggerHelper.CITY_NOT_FOUND_WARN(city));
+
+      throw new NotFoundException(WeatherMessagesHelper.CITY_NOT_FOUND);
+    }
+
+    const analysis = await this.weatherAiService.analyzeHistory(history);
 
     return {
-      summary: `Análise baseada em ${data.totalLogs || 0} registros.`,
-      metrics: {
-        average_temperature: data.avgTemp ? data.avgTemp.toFixed(1) : 0,
-        average_humidity: data.avgHum ? data.avgHum.toFixed(1) : 0,
-        max_temperature: data.maxTemp,
-        min_temperature: data.minTemp,
-      },
+      city,
+      current_data: history[0],
+      analysis: analysis,
+      history_sample: history.length,
+      message: WeatherMessagesHelper.GET_ANALYSIS_SUCCESS,
     };
   }
 
   async exportExcel() {
+    this.logger.log(WeatherLoggerHelper.EXPORT_START);
+
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('Clima');
 
     sheet.columns = [
-      { header: 'Data/Hora', key: 'date', width: 20 },
-      { header: 'Cidade', key: 'city', width: 15 },
+      { header: 'Data/Hora', key: 'date', width: 25 },
+      { header: 'Cidade', key: 'city', width: 20 },
       { header: 'Temp (°C)', key: 'temp', width: 10 },
-      { header: 'Umidade (%)', key: 'hum', width: 10 },
-      { header: 'Condição', key: 'cond', width: 15 },
-      { header: 'Insight IA', key: 'insight', width: 30 },
+      { header: 'Umidade (%)', key: 'hum', width: 12 },
+      { header: 'Vento (km/h)', key: 'wind', width: 12 },
+      { header: 'Condição', key: 'cond', width: 10 },
+      { header: 'Chuva (%)', key: 'rain', width: 10 },
     ];
 
-    const logs = await this.weatherModel.find().sort({ createdAt: -1 }).exec();
+    const logs: WeatherDocument[] = await this.weatherModel
+      .find()
+      .sort({ createdAt: -1 })
+      .exec();
 
     logs.forEach((log) => {
       sheet.addRow({
         date: log.createdAt?.toISOString(),
-        city: log.metadata?.city || 'N/A',
-        temp: log.sensor_data?.temperature,
-        hum: log.sensor_data?.humidity,
-        cond: log.sensor_data?.condition_code,
-        insight: log.ai_analysis?.insight,
+        city: log.city,
+        temp: log.temperature,
+        hum: log.humidity,
+        wind: log.wind_speed,
+        cond: log.condition_code,
+        rain: log.rain_probability,
       });
     });
+
+    this.logger.log(WeatherLoggerHelper.EXPORT_DONE);
 
     return workbook;
   }
