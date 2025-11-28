@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
-import { Weather } from './weather.schema';
-import { WeatherLoggerHelper, WeatherMessagesHelper } from './helpers';
+import { Weather } from '../weather.schema';
+import { WeatherLoggerHelper, WeatherMessagesHelper } from '../helpers';
 
 export interface IAiAnalysisResult {
   insight: string;

@@ -1,4 +1,4 @@
-import type { Response } from 'express';
+import { type Response } from 'express';
 import {
   Controller,
   Get,
@@ -8,19 +8,30 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { WeatherService } from './weather.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { WeatherService } from './services';
 import { CreateWeatherDto } from './dto/create-weather.dto';
 import { JwtAuthGuard } from 'src/auth/guards';
+import {
+  ApiWeatherCreate,
+  ApiWeatherExport,
+  ApiWeatherFindAll,
+  ApiWeatherInsights,
+} from './weather.swagger';
 
+@ApiTags('Weather')
+@ApiBearerAuth()
 @Controller('weather')
 export class WeatherController {
   constructor(private readonly weatherService: WeatherService) {}
 
+  @ApiWeatherCreate()
   @Post()
   async create(@Body() createWeatherDto: CreateWeatherDto) {
     return this.weatherService.create(createWeatherDto);
   }
 
+  @ApiWeatherFindAll()
   @UseGuards(JwtAuthGuard)
   @Get('logs')
   async findAll(
@@ -30,12 +41,14 @@ export class WeatherController {
     return this.weatherService.findAll(limit, offset);
   }
 
+  @ApiWeatherInsights()
   @UseGuards(JwtAuthGuard)
   @Get('insights')
   async getInsights() {
     return this.weatherService.getSmartAnalysis('Palmeiras - BA');
   }
 
+  @ApiWeatherExport('xlsx')
   @UseGuards(JwtAuthGuard)
   @Get('export.xlsx')
   async exportXlsx(@Res() res: Response) {
@@ -54,6 +67,7 @@ export class WeatherController {
     res.end();
   }
 
+  @ApiWeatherExport('csv')
   @UseGuards(JwtAuthGuard)
   @Get('export.csv')
   async exportCsv(@Res() res: Response) {

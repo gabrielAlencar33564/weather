@@ -2,10 +2,10 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as ExcelJS from 'exceljs';
-import { Weather, WeatherDocument } from './weather.schema';
-import { CreateWeatherDto } from './dto/create-weather.dto';
+import { Weather, WeatherDocument } from '../weather.schema';
+import { CreateWeatherDto } from '../dto/create-weather.dto';
 import { WeatherAiService } from './weather-ai.service';
-import { WeatherLoggerHelper, WeatherMessagesHelper } from './helpers';
+import { WeatherLoggerHelper, WeatherMessagesHelper } from '../helpers';
 
 @Injectable()
 export class WeatherService {
@@ -55,7 +55,6 @@ export class WeatherService {
         limit: limit,
         last_page: Math.ceil(total / limit),
         current_page: currentPage,
-        message: WeatherMessagesHelper.FIND_ALL_SUCCESS,
       },
     };
   }
