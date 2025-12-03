@@ -45,7 +45,6 @@ export class UsersController {
 
   @ApiUserFindOne()
   @UseGuards(JwtAuthGuard, OwnershipGuard)
-  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {

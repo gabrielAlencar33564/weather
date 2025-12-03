@@ -16,8 +16,8 @@ export class UsersService implements OnModuleInit {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async onModuleInit() {
-    const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@example.com';
-    const adminPass = process.env.DEFAULT_ADMIN_PASS || '123456';
+    const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || '';
+    const adminPass = process.env.DEFAULT_ADMIN_PASS || '';
 
     const existingAdmin = await this.userModel.findOne({ email: adminEmail });
 

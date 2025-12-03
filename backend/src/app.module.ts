@@ -9,9 +9,7 @@ import { PokemonModule } from './pokemon/pokemon.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(
-      'mongodb://admin:gdash_secret@mongo:27017/gdash?authSource=admin',
-    ),
+    MongooseModule.forRoot(process.env.MONGO_URI || ''),
     WeatherModule,
     UsersModule,
     AuthModule,

@@ -7,6 +7,8 @@ import {
   IPokemonApiResult,
   IPokemonDetailsResponse,
   IPokemonFullApiResponse,
+  IPokemonListItem,
+  IPokemonListApiResponse,
 } from './pokemon.interfaces';
 import { PokemonMessagesHelper } from './helpers/pokemon-messages.helper';
 
@@ -23,19 +25,15 @@ export class PokemonService {
     try {
       const url = `${this.baseUrl}/pokemon?limit=${limit}&offset=${offset}`;
 
-      const response: AxiosResponse<{
-        count: number;
-        next: string | null;
-        previous: string | null;
-        results: IPokemonApiResult[];
-      }> = await firstValueFrom(this.httpService.get(url));
+      const response: AxiosResponse<IPokemonListApiResponse> =
+        await firstValueFrom(this.httpService.get(url));
 
-      const results = response.data.results.map(
+      const results: IPokemonListItem[] = response.data.results.map(
         (pokemon: IPokemonApiResult) => {
           const urlParts = pokemon.url.split('/');
           const id = urlParts[urlParts.length - 2];
           return {
-            id: id,
+            id,
             name: pokemon.name,
           };
         },
@@ -47,15 +45,15 @@ export class PokemonService {
       return {
         data: results,
         meta: {
-          total: total,
-          offset: offset,
-          limit: limit,
+          total,
+          offset,
+          limit,
           last_page: Math.ceil(total / limit),
           current_page: currentPage,
           next_link: response.data.next,
           previous_link: response.data.previous,
         },
-      } as unknown as IPokemonListResponse;
+      };
     } catch {
       throw new InternalServerErrorException(
         PokemonMessagesHelper.COMMUNICATION_FAILURE,

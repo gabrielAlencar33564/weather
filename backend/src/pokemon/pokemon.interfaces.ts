@@ -3,14 +3,31 @@ export interface IPokemonApiResult {
   url: string;
 }
 
-export interface IPokemonListResponse {
+export interface IPokemonListApiResponse {
   count: number;
   next: string | null;
   previous: string | null;
-  results: {
-    id: string;
-    name: string;
-  }[];
+  results: IPokemonApiResult[];
+}
+
+export interface IPokemonListItem {
+  id: string;
+  name: string;
+}
+
+export interface IPokemonListMeta {
+  total: number;
+  offset: number;
+  limit: number;
+  last_page: number;
+  current_page: number;
+  next_link: string | null;
+  previous_link: string | null;
+}
+
+export interface IPokemonListResponse {
+  data: IPokemonListItem[];
+  meta: IPokemonListMeta;
 }
 
 export interface IPokemonDetailsResponse {

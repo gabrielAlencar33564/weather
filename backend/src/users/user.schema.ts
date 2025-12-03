@@ -11,13 +11,10 @@ export enum UserRole {
 @Schema({
   timestamps: true,
   toJSON: {
-    transform: (_, ret) => {
-      const userObj = ret as unknown as User;
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...rest } = userObj;
-
-      return rest;
+    transform: (_, ret: Record<string, any>) => {
+      delete ret.password;
+      delete ret.__v;
+      return ret;
     },
   },
 })

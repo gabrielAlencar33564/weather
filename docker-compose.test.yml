@@ -1,45 +1,43 @@
 version: '3.8'
 
 services:
-  mongo:
+  mongo_test:
     image: mongo:6.0
-    container_name: gdash-mongo
+    container_name: gdash-mongo-test
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
       - "${MONGO_PORT}:27017"
-    volumes:
-      - mongo_data:/data/db
     networks:
-      - gdash-network
+      - gdash-test-network
 
-  rabbitmq:
+  rabbitmq_test:
     image: rabbitmq:3-management-alpine
-    container_name: gdash-rabbitmq
+    container_name: gdash-rabbitmq-test
     restart: always
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     ports:
-      - "${RABBITMQ_PORT}:5672"  
-      - "${RABBITMQ_UI_PORT}:15672" 
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_UI_PORT}:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - gdash-network
+      - gdash-test-network
 
-  collector:
+  collector_test:
     build:
       context: ./collector
       dockerfile: Dockerfile
-    container_name: gdash-collector
+    container_name: gdash-collector-test
     depends_on:
-      rabbitmq:
+      rabbitmq_test:
         condition: service_healthy
     environment:
       RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/
@@ -48,60 +46,42 @@ services:
       CITY_LAT: ${CITY_LAT}
       CITY_LON: ${CITY_LON}
     networks:
-      - gdash-network
+      - gdash-test-network
 
-  worker:
+  worker_test:
     build:
       context: ./worker
       dockerfile: Dockerfile
-    container_name: gdash-worker
+    container_name: gdash-worker-test
     depends_on:
-      rabbitmq:
+      rabbitmq_test:
         condition: service_healthy
-      backend:
+      backend_test:
         condition: service_started
     environment:
       RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/
       API_URL: ${API_URL}
       QUEUE_NAME: ${QUEUE_NAME}
     networks:
-      - gdash-network
+      - gdash-test-network
 
-  backend:
+  backend_test:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: gdash-backend
+    container_name: gdash-backend-test
     depends_on:
-      - mongo
+      - mongo_test
     environment:
       MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
       DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL}
       DEFAULT_ADMIN_PASS: ${DEFAULT_ADMIN_PASS}
       JWT_SECRET: ${JWT_SECRET}
-      GEMINI_API_KEY: ${GEMINI_API_KEY}
     ports:
       - "${API_PORT}:3000"
     networks:
-      - gdash-network
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: gdash-frontend
-    ports:
-      - "${FRONTEND_PORT}:5173"
-    environment:
-      VITE_API_URL: http://localhost:${API_PORT}
-    depends_on:
-      - backend
-    networks:
-      - gdash-network
-
-volumes:
-  mongo_data:
+      - gdash-test-network
 
 networks:
-  gdash-network:
+  gdash-test-network:
     driver: bridge
