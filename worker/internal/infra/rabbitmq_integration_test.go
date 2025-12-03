@@ -15,7 +15,7 @@ import (
 func TestWorkerIntegration_RabbitMQToAPI(t *testing.T) {
 	rabbitURL := os.Getenv("RABBITMQ_URL")
 	if rabbitURL == "" {
-		t.Skip("RABBITMQ_URL not set; skipping integration test")
+		t.Skip("RABBITMQ_URL não definida; ignorando teste de integração")
 	}
 
 	baseQueue := os.Getenv("QUEUE_NAME")
@@ -29,16 +29,16 @@ func TestWorkerIntegration_RabbitMQToAPI(t *testing.T) {
 
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
+			t.Errorf("esperava método POST, mas recebeu %s", r.Method)
 		}
 
 		if r.URL.Path != "/api/weather" {
-			t.Errorf("expected endpoint /api/weather, got %s", r.URL.Path)
+			t.Errorf("esperava endpoint /api/weather, mas recebeu %s", r.URL.Path)
 		}
 
 		var payload domain.WeatherPayload
 		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-			t.Fatalf("error decoding JSON: %v", err)
+			t.Fatalf("erro ao decodificar JSON: %v", err)
 		}
 
 		done <- payload
@@ -54,13 +54,13 @@ func TestWorkerIntegration_RabbitMQToAPI(t *testing.T) {
 
 	conn, err := amqp.Dial(rabbitURL)
 	if err != nil {
-		t.Fatalf("failed to connect to RabbitMQ: %v", err)
+		t.Fatalf("falha ao conectar ao RabbitMQ: %v", err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		t.Fatalf("failed to open channel: %v", err)
+		t.Fatalf("falha ao abrir canal: %v", err)
 	}
 	defer ch.Close()
 
@@ -73,13 +73,13 @@ func TestWorkerIntegration_RabbitMQToAPI(t *testing.T) {
 		nil,
 	)
 	if err != nil {
-		t.Fatalf("failed to declare queue: %v", err)
+		t.Fatalf("falha ao declarar fila: %v", err)
 	}
 
 	payload := buildWeatherPayload()
 	body, err := json.Marshal(payload)
 	if err != nil {
-		t.Fatalf("failed to marshal payload: %v", err)
+		t.Fatalf("falha ao serializar payload: %v", err)
 	}
 
 	err = ch.Publish(
@@ -93,15 +93,15 @@ func TestWorkerIntegration_RabbitMQToAPI(t *testing.T) {
 		},
 	)
 	if err != nil {
-		t.Fatalf("failed to publish test message: %v", err)
+		t.Fatalf("falha ao publicar mensagem de teste: %v", err)
 	}
 
 	select {
 	case received := <-done:
 		if received.City != payload.City {
-			t.Errorf("expected city %s, got %s", payload.City, received.City)
+			t.Errorf("esperava cidade %s, mas recebeu %s", payload.City, received.City)
 		}
 	case <-time.After(10 * time.Second):
-		t.Fatal("timeout waiting for worker to consume message and call API")
+		t.Fatal("tempo esgotado aguardando o worker consumir a mensagem e chamar a API")
 	}
 }

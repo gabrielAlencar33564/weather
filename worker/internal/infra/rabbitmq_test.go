@@ -27,24 +27,24 @@ func buildWeatherPayload() domain.WeatherPayload {
 func TestPostToAPI_Success(t *testing.T) {
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
+			t.Errorf("esperava método POST, mas recebeu %s", r.Method)
 		}
 
 		if r.URL.Path != "/api/weather" {
-			t.Errorf("expected endpoint /api/weather, got %s", r.URL.Path)
+			t.Errorf("esperava endpoint /api/weather, mas recebeu %s", r.URL.Path)
 		}
 
 		var payload domain.WeatherPayload
 		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-			t.Fatalf("error decoding JSON: %v", err)
+			t.Fatalf("erro ao decodificar JSON: %v", err)
 		}
 
 		if payload.City != "Gotham" {
-			t.Errorf("expected City Gotham, got %s", payload.City)
+			t.Errorf("esperava cidade Gotham, mas recebeu %s", payload.City)
 		}
 
 		if payload.Temperature != 20.0 {
-			t.Errorf("expected Temperature 20.0, got %v", payload.Temperature)
+			t.Errorf("esperava temperatura 20.0, mas recebeu %v", payload.Temperature)
 		}
 
 		w.WriteHeader(http.StatusCreated)
@@ -57,13 +57,13 @@ func TestPostToAPI_Success(t *testing.T) {
 
 	err := consumer.postToAPI(payload)
 	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
+		t.Fatalf("erro inesperado: %v", err)
 	}
 }
 
 func TestPostToAPI_Failure(t *testing.T) {
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Erro interno do servidor", http.StatusInternalServerError)
 	}))
 	defer mockServer.Close()
 
@@ -74,15 +74,15 @@ func TestPostToAPI_Failure(t *testing.T) {
 	err := consumer.postToAPI(payload)
 
 	if err == nil {
-		t.Fatal("expected error, got nil")
+		t.Fatal("esperava erro, mas recebeu nil")
 	}
 
 	httpErr, ok := err.(*HttpError)
 	if !ok {
-		t.Fatalf("expected HttpError, got %T", err)
+		t.Fatalf("esperava HttpError, mas recebeu %T", err)
 	}
 
 	if httpErr.Status != "500 Internal Server Error" {
-		t.Errorf("expected status 500 Internal Server Error, got %s", httpErr.Status)
+		t.Errorf("esperava status 500 Internal Server Error, mas recebeu %s", httpErr.Status)
 	}
 }
