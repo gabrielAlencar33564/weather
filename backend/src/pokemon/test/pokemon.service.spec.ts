@@ -85,10 +85,6 @@ describe('PokemonService', () => {
     expect(resultado.meta.limit).toBe(2);
     expect(resultado.meta.last_page).toBe(1);
     expect(resultado.meta.current_page).toBe(1);
-    expect(resultado.meta.next_link).toBe(
-      'https://pokeapi.co/api/v2/pokemon?offset=2&limit=2',
-    );
-    expect(resultado.meta.previous_link).toBeNull();
   });
 
   it('deve lançar InternalServerErrorException em findAll quando houver falha na comunicação', async () => {
@@ -112,6 +108,7 @@ describe('PokemonService', () => {
         name: 'pikachu',
         height: 4,
         weight: 60,
+        types: [{ type: { name: 'electric' } }],
         sprites: {
           front_default: 'https://pokeapi.co/media/sprites/pokemon/25.png',
         },

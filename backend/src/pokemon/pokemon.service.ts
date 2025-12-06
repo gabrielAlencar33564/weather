@@ -50,8 +50,6 @@ export class PokemonService {
           limit,
           last_page: Math.ceil(total / limit),
           current_page: currentPage,
-          next_link: response.data.next,
-          previous_link: response.data.previous,
         },
       };
     } catch {
@@ -73,6 +71,7 @@ export class PokemonService {
         name: response.data.name,
         height: response.data.height,
         weight: response.data.weight,
+        types: response.data.types.map((t) => t.type.name),
         abilities: response.data.abilities.map((a) => a.ability.name),
         sprite: response.data.sprites.front_default,
       };

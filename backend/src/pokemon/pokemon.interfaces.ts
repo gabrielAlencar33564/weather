@@ -21,8 +21,6 @@ export interface IPokemonListMeta {
   limit: number;
   last_page: number;
   current_page: number;
-  next_link: string | null;
-  previous_link: string | null;
 }
 
 export interface IPokemonListResponse {
@@ -35,6 +33,7 @@ export interface IPokemonDetailsResponse {
   name: string;
   height: number;
   weight: number;
+  types: string[];
   abilities: string[];
   sprite: string;
 }
@@ -47,6 +46,11 @@ export interface IPokemonFullApiResponse {
   sprites: {
     front_default: string;
   };
+  types: {
+    type: {
+      name: string;
+    };
+  }[];
   abilities: {
     ability: {
       name: string;

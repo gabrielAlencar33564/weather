@@ -18,6 +18,9 @@ export class PokemonDetailsEntity {
   @ApiProperty({ example: 7, description: 'Altura em decímetros' })
   height: number;
 
+  @ApiProperty({ example: ['grass', 'poison'], type: [String] })
+  types: string[];
+
   @ApiProperty({ example: 69, description: 'Peso em hectogramas' })
   weight: number;
 
@@ -43,15 +46,6 @@ class PokemonMetaData {
 
   @ApiProperty({ example: 1 })
   current_page: number;
-
-  @ApiProperty({
-    example: 'https://pokeapi.co/api/v2/pokemon?offset=20&limit=20',
-    nullable: true,
-  })
-  next_link: string | null;
-
-  @ApiProperty({ example: null, nullable: true })
-  previous_link: string | null;
 }
 
 export class PokemonPaginationResponse {

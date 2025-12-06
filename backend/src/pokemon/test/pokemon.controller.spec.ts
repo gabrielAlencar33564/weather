@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PokemonController } from '../pokemon.controller';
 import { PokemonService } from '../pokemon.service';
+import {
+  IPokemonDetailsResponse,
+  IPokemonListResponse,
+} from '../pokemon.interfaces';
 
 describe('PokemonController', () => {
   let controller: PokemonController;
@@ -37,7 +41,7 @@ describe('PokemonController', () => {
   });
 
   it('deve chamar PokemonService.findAll com limit e offset ao listar pokémons', async () => {
-    const respostaService = {
+    const respostaService: IPokemonListResponse = {
       data: [
         { id: '1', name: 'bulbasaur' },
         { id: '2', name: 'ivysaur' },
@@ -48,8 +52,6 @@ describe('PokemonController', () => {
         limit: 2,
         last_page: 1,
         current_page: 1,
-        next_link: null,
-        previous_link: null,
       },
     };
 
@@ -62,11 +64,12 @@ describe('PokemonController', () => {
   });
 
   it('deve chamar PokemonService.findOne com id ao buscar um pokémon específico', async () => {
-    const respostaService = {
+    const respostaService: IPokemonDetailsResponse = {
       id: 25,
       name: 'pikachu',
       height: 4,
       weight: 60,
+      types: ['electric'],
       abilities: ['static', 'lightning-rod'],
       sprite: 'https://pokeapi.co/media/sprites/pokemon/25.png',
     };

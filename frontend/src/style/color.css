@@ -1,8 +1,3 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
-
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -16,7 +11,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
   --radius: 0.625rem;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -48,59 +45,24 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-}
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+  --condition-sunny-bg: oklch(0.96 0.12 95);
+  --condition-sunny-fg: oklch(0.42 0.12 75);
+  --condition-sunny-border: oklch(0.9 0.09 95);
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+  --condition-rainy-bg: oklch(0.95 0.07 220);
+  --condition-rainy-fg: oklch(0.4 0.09 240);
+  --condition-rainy-border: oklch(0.88 0.06 220);
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  --condition-neutral-bg: oklch(0.94 0.01 260);
+  --condition-neutral-fg: oklch(0.35 0.02 260);
+  --condition-neutral-border: oklch(0.86 0.01 260);
 }
 
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
   }
 }
 
@@ -109,6 +71,7 @@ button:focus-visible {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -140,6 +103,18 @@ button:focus-visible {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-condition-sunny-bg: var(--condition-sunny-bg);
+  --color-condition-sunny-fg: var(--condition-sunny-fg);
+  --color-condition-sunny-border: var(--condition-sunny-border);
+
+  --color-condition-rainy-bg: var(--condition-rainy-bg);
+  --color-condition-rainy-fg: var(--condition-rainy-fg);
+  --color-condition-rainy-border: var(--condition-rainy-border);
+
+  --color-condition-neutral-bg: var(--condition-neutral-bg);
+  --color-condition-neutral-fg: var(--condition-neutral-fg);
+  --color-condition-neutral-border: var(--condition-neutral-border);
 }
 
 .dark {
@@ -174,13 +149,16 @@ button:focus-visible {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-}
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+  --condition-sunny-bg: oklch(0.3 0.07 95);
+  --condition-sunny-fg: oklch(0.9 0.16 95);
+  --condition-sunny-border: oklch(0.55 0.09 95);
+
+  --condition-rainy-bg: oklch(0.28 0.05 240);
+  --condition-rainy-fg: oklch(0.88 0.1 240);
+  --condition-rainy-border: oklch(0.55 0.07 240);
+
+  --condition-neutral-bg: oklch(0.28 0.01 260);
+  --condition-neutral-fg: oklch(0.9 0.01 260);
+  --condition-neutral-border: oklch(0.6 0.01 260);
 }

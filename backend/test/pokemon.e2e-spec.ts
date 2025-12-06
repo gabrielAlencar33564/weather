@@ -68,8 +68,6 @@ describe('Módulo de Pokemon (e2e)', () => {
           limit: 2,
           last_page: 1,
           current_page: 1,
-          next_link: null,
-          previous_link: null,
         },
       };
 
@@ -102,6 +100,7 @@ describe('Módulo de Pokemon (e2e)', () => {
         name: 'bulbasaur',
         height: 7,
         weight: 69,
+        types: ['grass', 'poison'],
         abilities: ['overgrow', 'chlorophyll'],
         sprite: 'https://example.com/bulbasaur.png',
       };
