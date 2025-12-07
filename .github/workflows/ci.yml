@@ -168,16 +168,19 @@ jobs:
         run: |
           npm run test:e2e
 
-      # FRONTEND (Vite/React)
+      # FRONTEND (Vite/React) - deps
       - name: Install frontend dependencies
         working-directory: frontend
         run: |
           npm ci
 
-      - name: Run frontend tests
+      # FRONTEND (Vite/React) - subir dev server + rodar Cypress
+      - name: Run frontend e2e tests (Cypress)
         working-directory: frontend
         env:
           VITE_API_URL: ${{ env.API_URL_PUBLIC }}
           VITE_FRONTEND_ORIGIN: ${{ env.FRONTEND_ORIGIN }}
         run: |
+          npm run dev -- --host 0.0.0.0 --port 5173 &
+          npx wait-on http://localhost:5173
           npm run test:e2e

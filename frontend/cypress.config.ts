@@ -1,6 +1,9 @@
 /// <reference types="vite/client" />
 
 import { defineConfig } from "cypress";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const baseUrl = process.env.VITE_FRONTEND_ORIGIN || "";
 const apiUrl = process.env.VITE_API_URL || "";
