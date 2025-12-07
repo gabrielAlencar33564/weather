@@ -47,7 +47,7 @@ jobs:
       CITY_LON: ${{ secrets.CITY_LON }}
       CITY_NAME: ${{ secrets.CITY_NAME }}
 
-      API_PORT: 3000
+      API_PORT: ${{ secrets.API_PORT }}
 
       API_URL_PUBLIC: http://localhost:3000
       API_URL_INTERNAL: http://backend:3000
