@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/login";
 import DashboardPage from "./pages/dashboard";
 import UsersPage from "./pages/users";
@@ -42,7 +42,7 @@ const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route
           path="/login"
@@ -86,7 +86,7 @@ const AppRoutes: React.FC = () => {
         />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 

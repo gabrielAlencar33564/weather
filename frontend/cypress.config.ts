@@ -11,7 +11,7 @@ const apiUrl = process.env.API_URL_PUBLIC || "";
 
 export default defineConfig({
   e2e: {
-    baseUrl,
+    baseUrl: `${baseUrl}/#`,
     specPattern: "cypress/e2e/**/*.cy.{ts,tsx,js,jsx}",
     supportFile: "cypress/support/e2e.ts",
     screenshotsFolder: "cypress/screenshots",
