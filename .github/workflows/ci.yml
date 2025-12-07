@@ -41,24 +41,24 @@ jobs:
       RABBITMQ_UI_PORT: ${{ secrets.RABBITMQ_UI_PORT }}
       RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
 
-      QUEUE_NAME: weather_data
+      QUEUE_NAME: ${{ secrets.QUEUE_NAME }}
 
-      CITY_LAT: "-12.51"
-      CITY_LON: "-41.57"
-      CITY_NAME: "Palmeiras - BA"
+      CITY_LAT: ${{ secrets.CITY_LAT }}
+      CITY_LON: ${{ secrets.CITY_LON }}
+      CITY_NAME: ${{ secrets.CITY_NAME }}
 
-      API_PORT: 3000
+      API_PORT: ${{ secrets.API_PORT }}
 
-      API_URL_PUBLIC: http://localhost:3000
-      API_URL_INTERNAL: http://backend:3000
+      API_URL_PUBLIC: ${{ secrets.API_URL_PUBLIC }}
+      API_URL_INTERNAL: ${{ secrets.API_URL_INTERNAL }}
 
-      FRONTEND_PORT: 5173
-      FRONTEND_ORIGIN: http://localhost:5173
+      FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
+      FRONTEND_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
 
-      DEFAULT_ADMIN_EMAIL: admin@gdash.com
-      DEFAULT_ADMIN_PASS: 123456
+      DEFAULT_ADMIN_EMAIL: ${{ secrets.DEFAULT_ADMIN_EMAIL }}
+      DEFAULT_ADMIN_PASS: ${{ secrets.DEFAULT_ADMIN_PASS }}
 
-      JWT_SECRET: secret
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       NODE_ENV: test
