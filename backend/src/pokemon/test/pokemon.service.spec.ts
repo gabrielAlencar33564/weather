@@ -132,6 +132,7 @@ describe('PokemonService', () => {
       name: 'pikachu',
       height: 4,
       weight: 60,
+      types: ['electric'],
       abilities: ['static', 'lightning-rod'],
       sprite: 'https://pokeapi.co/media/sprites/pokemon/25.png',
     });
