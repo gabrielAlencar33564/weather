@@ -10,7 +10,7 @@ describe("Dashboard de clima", () => {
 
     cy.visit("/dashboard");
 
-    cy.wait("@getWeatherLogs", { timeout: 15000 });
+    cy.wait("@getWeatherLogs");
   });
 
   it("deve exibir o cabeçalho da dashboard", () => {
