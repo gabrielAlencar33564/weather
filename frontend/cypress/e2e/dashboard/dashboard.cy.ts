@@ -1,6 +1,6 @@
 describe("Dashboard de clima", () => {
-  const adminEmail = "testadmin@gdash.com";
-  const adminPassword = "test123";
+  const adminEmail = "admin@gdash.com";
+  const adminPassword = "123456";
 
   beforeEach(() => {
     cy.login({ password: adminPassword, email: adminEmail });

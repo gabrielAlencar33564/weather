@@ -5,8 +5,8 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const baseUrl = process.env.VITE_FRONTEND_ORIGIN || "";
-const apiUrl = process.env.VITE_API_URL || "";
+const baseUrl = process.env.FRONTEND_ORIGIN || "";
+const apiUrl = process.env.API_URL_PUBLIC || "";
 
 export default defineConfig({
   e2e: {
