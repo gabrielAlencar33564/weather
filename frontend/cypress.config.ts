@@ -2,8 +2,8 @@
 
 import { defineConfig } from "cypress";
 
-const baseUrl = process.env.CYPRESS_BASE_URL || "";
-const apiUrl = process.env.CYPRESS_API_URL || "";
+const baseUrl = process.env.VITE_FRONTEND_ORIGIN || "";
+const apiUrl = process.env.VITE_API_URL || "";
 
 export default defineConfig({
   e2e: {

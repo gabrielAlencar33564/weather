@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "cy:open": "cypress open",
-    "cy:e2e": "cypress run --spec \"cypress/e2e/**/*\""
+    "test:e2e": "cypress run --spec \"cypress/e2e/**/*\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
