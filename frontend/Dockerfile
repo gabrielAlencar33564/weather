@@ -1,8 +1,8 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
-RUN apk update && apk add --no-cache libc6-compat
+RUN apk update && apk upgrade
 
 COPY package*.json ./
 
@@ -10,16 +10,6 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+EXPOSE 5173
 
-FROM nginx:alpine AS runner
-
-WORKDIR /usr/share/nginx/html
-
-RUN rm -rf ./*
-
-COPY --from=builder /app/dist ./
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]

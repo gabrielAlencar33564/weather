@@ -9,8 +9,6 @@ import {
   TableHeader,
   TableRow,
   Button,
-} from "@/components/ui";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -18,7 +16,7 @@ import {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
-} from "@/components/ui/pagination";
+} from "@/components";
 import { User as UserIcon, Trash2, Edit } from "lucide-react";
 import type { IUser, IUserPaginationMeta } from "@/interfaces";
 import { UserRoleBadge } from "./user-role-badge";
@@ -45,9 +43,9 @@ export const UsersTable: React.FC<UsersTableProps> = ({
   const pages = hasPagination ? buildPages(currentPage, lastPage) : [];
 
   return (
-    <Card>
+    <Card data-cy="users-table-card">
       <CardContent className="p-0">
-        <Table>
+        <Table data-cy="users-table">
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
@@ -58,7 +56,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
           </TableHeader>
           <TableBody>
             {users.map((user) => (
-              <TableRow key={user._id}>
+              <TableRow key={user._id} data-cy="users-table-row">
                 <TableCell className="font-medium flex items-center gap-2">
                   <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
                     <UserIcon className="h-4 w-4 text-muted-foreground" />
@@ -70,7 +68,12 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                   <UserRoleBadge role={user.role} />
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => onEdit(user)}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onEdit(user)}
+                    data-cy="button-edit-user"
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
                   <Button
@@ -78,6 +81,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                     size="sm"
                     className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => onDelete(user)}
+                    data-cy="button-delete-user"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -87,15 +91,23 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 
             {users.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={4}
+                  className="h-24 text-center text-muted-foreground"
+                  data-cy="users-table-empty"
+                >
                   Nenhum usuario encontrado
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
+
         {hasPagination && (
-          <div className="flex items-center justify-center border-t px-4 py-3 border-border">
+          <div
+            className="flex items-center justify-center border-t px-4 py-3 border-border"
+            data-cy="users-pagination"
+          >
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
@@ -132,6 +144,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                             onPageChange(pageNumber);
                           }
                         }}
+                        data-cy="users-page-link"
                       >
                         {pageNumber}
                       </PaginationLink>

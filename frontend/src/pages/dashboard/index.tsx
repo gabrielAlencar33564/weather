@@ -33,11 +33,11 @@ const DashboardPage: React.FC = () => {
   } = useWeather();
 
   useEffect(() => {
-    void loadWeatherLogs({
+    loadWeatherLogs({
       limit: 10,
       offset: 0,
     });
-    void loadWeatherInsight();
+    loadWeatherInsight();
   }, [loadWeatherLogs, loadWeatherInsight]);
 
   const data: WeatherData[] = useMemo(
@@ -77,7 +77,7 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-cy="dashboard-page">
       <DashboardHeader onExport={handleExport} />
       <WeatherKpiCards current={current} />
       <AiInsightCard

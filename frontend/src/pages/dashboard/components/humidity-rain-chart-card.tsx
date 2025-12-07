@@ -26,12 +26,16 @@ type HumidityRainChartCardProps = {
 
 export const HumidityRainChartCard: React.FC<HumidityRainChartCardProps> = ({ data }) => {
   return (
-    <Card className="col-span-1">
+    <Card className="col-span-1" data-cy="humidity-rain-chart-card">
       <CardHeader>
         <CardTitle>Umidade e Chuva</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
-        <ChartContainer config={humidityChartConfig} className="h-[250px] w-full">
+        <ChartContainer
+          config={humidityChartConfig}
+          className="h-[250px] w-full"
+          data-cy="humidity-rain-chart-container"
+        >
           <LineChart data={data}>
             <CartesianGrid
               strokeDasharray="3 3"

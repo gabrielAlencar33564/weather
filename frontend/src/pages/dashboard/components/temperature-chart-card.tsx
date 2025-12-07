@@ -22,12 +22,16 @@ type TemperatureChartCardProps = {
 
 export const TemperatureChartCard: React.FC<TemperatureChartCardProps> = ({ data }) => {
   return (
-    <Card className="col-span-1">
+    <Card className="col-span-1" data-cy="temperature-chart-card">
       <CardHeader>
         <CardTitle>Variação de Temperatura (Hoje)</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
-        <ChartContainer config={temperatureChartConfig} className="h-[250px] w-full">
+        <ChartContainer
+          config={temperatureChartConfig}
+          className="h-[250px] w-full"
+          data-cy="temperature-chart-container"
+        >
           <AreaChart data={data}>
             <CartesianGrid
               strokeDasharray="3 3"

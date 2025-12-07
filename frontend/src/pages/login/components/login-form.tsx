@@ -1,36 +1,31 @@
 import React from "react";
 import { Button, Input, Label } from "@/components/ui";
+import type { UseFormRegister } from "react-hook-form";
+import type { IAuthLoginPayload } from "@/interfaces";
 
 type LoginFormProps = {
-  email: string;
-  password: string;
   error: string;
   isLoading: boolean;
-  onEmailChange: (value: string) => void;
-  onPasswordChange: (value: string) => void;
+  register: UseFormRegister<IAuthLoginPayload>;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };
 
 export const LoginForm: React.FC<LoginFormProps> = ({
-  email,
-  password,
   error,
   isLoading,
-  onEmailChange,
-  onPasswordChange,
+  register,
   onSubmit,
 }) => {
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-4" data-cy="form-login">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
           type="email"
           placeholder="user@gmail.com"
-          value={email}
-          onChange={(e) => onEmailChange(e.target.value)}
-          required
+          data-cy="input-email"
+          {...register("email")}
         />
       </div>
 
@@ -40,15 +35,23 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           id="password"
           type="password"
           placeholder="••••••"
-          value={password}
-          onChange={(e) => onPasswordChange(e.target.value)}
-          required
+          {...register("password")}
+          data-cy="input-password"
         />
       </div>
 
-      {error && <p className="text-sm text-destructive font-medium">{error}</p>}
+      {error && (
+        <p className="text-sm text-destructive font-medium" data-cy="message-erro-login">
+          {error}
+        </p>
+      )}
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={isLoading}
+        data-cy="button-enter"
+      >
         {isLoading ? "Entrando..." : "Entrar"}
       </Button>
     </form>

@@ -28,13 +28,13 @@ export const UsersDeleteDialog: React.FC<UsersDeleteDialogProps> = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent data-cy="users-delete-dialog">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-5 w-5" />
             Confirmar Exclusão
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription data-cy="users-delete-dialog-message">
             Tem certeza que deseja remover o usuário <b>{user?.name}</b>?
             <br />
             Esta ação não pode ser desfeita e o usuário perderá o acesso imediatamente.
@@ -45,10 +45,16 @@ export const UsersDeleteDialog: React.FC<UsersDeleteDialogProps> = ({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
+            data-cy="button-cancel-delete-user"
           >
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={onConfirm} disabled={isSubmitting}>
+          <Button
+            variant="destructive"
+            onClick={onConfirm}
+            disabled={isSubmitting}
+            data-cy="button-confirm-delete-user"
+          >
             {isSubmitting ? "Excluindo..." : "Excluir Usuário"}
           </Button>
         </DialogFooter>

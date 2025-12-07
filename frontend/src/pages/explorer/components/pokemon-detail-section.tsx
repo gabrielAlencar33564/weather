@@ -14,12 +14,21 @@ export const PokemonDetailSection: React.FC<PokemonDetailSectionProps> = ({
 }) => {
   return (
     <div className="md:col-span-1">
-      <Card className="sticky top-6 h-full min-h-[300px] border-l-4 border-l-primary">
+      <Card
+        className="sticky top-6 h-full min-h-[300px] border-l-4 border-l-primary"
+        data-cy="pokemon-detail-section"
+      >
         <CardContent className="p-6 flex flex-col items-center justify-center h-full text-center">
           {detailLoading ? (
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <Loader2
+              className="h-8 w-8 animate-spin text-primary"
+              data-cy="pokemon-detail-loader"
+            />
           ) : selected ? (
-            <div className="space-y-4 animate-in fade-in zoom-in duration-300">
+            <div
+              className="space-y-4 animate-in fade-in zoom-in duration-300"
+              data-cy="pokemon-detail-selected"
+            >
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-50" />
                 <img
@@ -31,7 +40,10 @@ export const PokemonDetailSection: React.FC<PokemonDetailSectionProps> = ({
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold capitalize text-foreground">
+                <h2
+                  className="text-2xl font-bold capitalize text-foreground"
+                  data-cy="pokemon-detail-name"
+                >
                   {selected.name}
                 </h2>
                 <p className="text-muted-foreground">
@@ -66,7 +78,10 @@ export const PokemonDetailSection: React.FC<PokemonDetailSectionProps> = ({
               </div>
             </div>
           ) : (
-            <div className="text-muted-foreground flex flex-col items-center">
+            <div
+              className="text-muted-foreground flex flex-col items-center"
+              data-cy="pokemon-detail-empty"
+            >
               <Search className="h-12 w-12 mb-2 opacity-20" />
               <p>Selecione um item da lista para ver os detalhes</p>
             </div>

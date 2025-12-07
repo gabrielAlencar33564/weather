@@ -40,11 +40,11 @@ export const PokemonListSection: React.FC<PokemonListSectionProps> = ({
   const pages = hasPagination ? buildPages(currentPage, lastPage) : [];
 
   return (
-    <div className="md:col-span-2 space-y-4">
+    <div className="md:col-span-2 space-y-4" data-cy="pokemon-list-section">
       <Card>
         <CardContent className="p-6">
           {loading ? (
-            <div className="flex justify-center p-12">
+            <div className="flex justify-center p-12" data-cy="pokemon-list-loader">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
@@ -58,13 +58,17 @@ export const PokemonListSection: React.FC<PokemonListSectionProps> = ({
                       ? "border-primary bg-primary/10 text-primary ring-1 ring-primary"
                       : "border-border text-foreground hover:border-primary/50"
                   }`}
+                  data-cy="pokemon-list-item"
                 >
                   {poke.name}
                 </button>
               ))}
 
               {list.length === 0 && !loading && (
-                <div className="col-span-2 sm:col-span-3 text-center text-sm text-muted-foreground py-6">
+                <div
+                  className="col-span-2 sm:col-span-3 text-center text-sm text-muted-foreground py-6"
+                  data-cy="pokemon-list-empty"
+                >
                   Nenhum Pokemon encontrado
                 </div>
               )}
@@ -72,7 +76,10 @@ export const PokemonListSection: React.FC<PokemonListSectionProps> = ({
           )}
 
           {hasPagination && (
-            <div className="flex items-center justify-center mt-6">
+            <div
+              className="flex items-center justify-center mt-6"
+              data-cy="pokemon-list-pagination"
+            >
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -109,6 +116,7 @@ export const PokemonListSection: React.FC<PokemonListSectionProps> = ({
                               onPageChange(pageNumber);
                             }
                           }}
+                          data-cy="pokemon-page-link"
                         >
                           {pageNumber}
                         </PaginationLink>

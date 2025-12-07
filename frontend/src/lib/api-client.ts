@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const resolveApiBaseUrl = (): string => {
-  const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const rawUrl = import.meta.env.VITE_API_URL;
 
   const envUrl = rawUrl || "";
 

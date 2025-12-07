@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/login";
 import DashboardPage from "./pages/dashboard";
 import UsersPage from "./pages/users";
@@ -32,7 +32,7 @@ const RequireAdmin: React.FC<GuardProps> = ({ children }) => {
   }
 
   if (user?.role !== "admin") {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -42,14 +42,14 @@ const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route
           path="/login"
-          element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
         />
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <RequireAuth>
               <PrimaryLayout>
@@ -84,9 +84,9 @@ const AppRoutes: React.FC = () => {
             </RequireAuth>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 

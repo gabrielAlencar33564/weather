@@ -43,12 +43,12 @@ export const WeatherTableCard: React.FC<WeatherTableCardProps> = ({
   const pages = hasPagination ? buildPages(currentPage, lastPage) : [];
 
   return (
-    <Card>
+    <Card data-cy="weather-table-card">
       <CardHeader>
         <CardTitle>Registros Recentes</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <Table>
+        <Table data-cy="weather-table">
           <TableHeader>
             <TableRow>
               <TableHead>Horário</TableHead>
@@ -60,7 +60,7 @@ export const WeatherTableCard: React.FC<WeatherTableCardProps> = ({
           </TableHeader>
           <TableBody>
             {data.map((row, i) => (
-              <TableRow key={`${row.timestamp}-${i}`}>
+              <TableRow key={`${row.timestamp}-${i}`} data-cy="weather-table-row">
                 <TableCell className="font-medium">{row.timestamp}</TableCell>
                 <TableCell>{row.temperature}°C</TableCell>
                 <TableCell>{row.humidity}%</TableCell>
@@ -82,10 +82,13 @@ export const WeatherTableCard: React.FC<WeatherTableCardProps> = ({
         </Table>
 
         {hasPagination && (
-          <div className="flex flex-col items-center justify-center border-t border-border px-4 py-3 gap-2">
+          <div
+            className="flex flex-col items-center justify-center border-t border-border px-4 py-3 gap-2"
+            data-cy="weather-table-pagination-wrapper"
+          >
             <div className="w-full max-w-full overflow-x-auto">
               <div className="flex justify-center">
-                <Pagination>
+                <Pagination data-cy="weather-table-pagination">
                   <PaginationContent className="flex flex-nowrap gap-1 sm:gap-2">
                     <PaginationItem>
                       <PaginationPrevious

@@ -88,30 +88,28 @@ export const AuthProvider: React.FC<IContextProvider> = ({ children }) => {
       const { token } = await loginRequest(payload);
       localStorage.setItem(AUTH_TOKEN_KEY, token);
 
-      try {
-        const decoded = jwtDecode<JwtPayload>(token);
-        const userId = decoded.sub;
+      const decoded = jwtDecode<JwtPayload>(token);
+      const userId = decoded.sub;
 
-        if (userId) {
-          const user = await getUserById(userId as string, token);
+      if (userId) {
+        const user = await getUserById(userId as string, token);
 
-          setAuthToken(token);
-          setState((prev) => ({
-            ...prev,
-            token,
-            user,
-            isAuthenticated: true,
-          }));
-        }
-      } catch (e) {
-        const error = e as Error & { response?: { data?: { message?: string } } };
-        const message =
-          error?.response?.data?.message ||
-          error?.message ||
-          "Não foi possível carregar os Pokemons.";
-
-        setState((prev) => ({ ...prev, error: message }));
+        setAuthToken(token);
+        setState((prev) => ({
+          ...prev,
+          token,
+          user,
+          isAuthenticated: true,
+        }));
       }
+    } catch (e) {
+      const error = e as Error & { response?: { data?: { message?: string } } };
+      const message =
+        error?.response?.data?.message || error?.message || "Não foi possivel logar.";
+
+      console.log(message);
+
+      setState((prev) => ({ ...prev, error: message }));
     } finally {
       setState((prev) => ({ ...prev, isSubmitting: false }));
     }

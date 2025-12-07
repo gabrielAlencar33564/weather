@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui";
 import { LoginHeader, LoginForm } from "./components";
 import { loginSchema, useAuth } from "@/features/auth";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { IAuthLoginPayload } from "@/interfaces";
 
@@ -13,8 +13,7 @@ const LoginPage: React.FC = () => {
 
   const {
     handleSubmit,
-    setValue,
-    control,
+    register,
     formState: { errors, isSubmitting },
   } = useForm<IAuthLoginPayload>({
     resolver: yupResolver(loginSchema),
@@ -23,9 +22,6 @@ const LoginPage: React.FC = () => {
       password: "",
     },
   });
-
-  const email = useWatch({ name: "email", control });
-  const password = useWatch({ name: "password", control });
 
   const onSubmit = async (values: IAuthLoginPayload) => {
     await onLogin({
@@ -42,16 +38,9 @@ const LoginPage: React.FC = () => {
         <LoginHeader />
         <CardContent>
           <LoginForm
-            email={email}
-            password={password}
+            register={register}
             error={apiError || fieldErrorMessage}
             isLoading={isSubmitting}
-            onEmailChange={(value: string) =>
-              setValue("email", value, { shouldValidate: true })
-            }
-            onPasswordChange={(value: string) =>
-              setValue("password", value, { shouldValidate: true })
-            }
             onSubmit={handleSubmit(onSubmit)}
           />
         </CardContent>

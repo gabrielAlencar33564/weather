@@ -170,7 +170,7 @@ const UsersPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-cy="users-page">
       <UsersHeader onNewUser={startNew} isSubmitting={isSubmitting} />
 
       {formState.isOpen && (

@@ -25,8 +25,8 @@ export const WeatherKpiCards: React.FC<WeatherKpiCardsProps> = ({
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card className="border-l-4 border-l-yellow-500">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" data-cy="weather-kpi-cards">
+      <Card className="border-l-4 border-l-yellow-500" data-cy="kpi-temperatura">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             {showSkeleton ? <Skeleton className="h-4 w-24" /> : "Temperatura"}
@@ -41,7 +41,9 @@ export const WeatherKpiCards: React.FC<WeatherKpiCardsProps> = ({
             </>
           ) : (
             <>
-              <div className="text-2xl font-bold">{safeCurrent.temperature}°C</div>
+              <div className="text-2xl font-bold" data-cy="kpi-temperatura-valor">
+                {safeCurrent.temperature}°C
+              </div>
               <p className="text-xs text-muted-foreground">
                 Sensacao termica de {safeCurrent.temperature + 2}°C
               </p>
@@ -50,7 +52,7 @@ export const WeatherKpiCards: React.FC<WeatherKpiCardsProps> = ({
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-blue-500">
+      <Card className="border-l-4 border-l-blue-500" data-cy="kpi-umidade">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             {showSkeleton ? <Skeleton className="h-4 w-20" /> : "Umidade"}
@@ -65,14 +67,16 @@ export const WeatherKpiCards: React.FC<WeatherKpiCardsProps> = ({
             </>
           ) : (
             <>
-              <div className="text-2xl font-bold">{safeCurrent.humidity}%</div>
+              <div className="text-2xl font-bold" data-cy="kpi-umidade-valor">
+                {safeCurrent.humidity}%
+              </div>
               <p className="text-xs text-muted-foreground">Zona de conforto: Ideal</p>
             </>
           )}
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-gray-500">
+      <Card className="border-l-4 border-l-gray-500" data-cy="kpi-vento">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             {showSkeleton ? <Skeleton className="h-4 w-16" /> : "Vento"}
@@ -87,14 +91,16 @@ export const WeatherKpiCards: React.FC<WeatherKpiCardsProps> = ({
             </>
           ) : (
             <>
-              <div className="text-2xl font-bold">{safeCurrent.windSpeed} km/h</div>
+              <div className="text-2xl font-bold" data-cy="kpi-vento-valor">
+                {safeCurrent.windSpeed} km/h
+              </div>
               <p className="text-xs text-muted-foreground">Direcao: Sudeste</p>
             </>
           )}
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-purple-500">
+      <Card className="border-l-4 border-l-purple-500" data-cy="kpi-prob-chuva">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             {showSkeleton ? <Skeleton className="h-4 w-28" /> : "Prob. Chuva"}
@@ -109,7 +115,9 @@ export const WeatherKpiCards: React.FC<WeatherKpiCardsProps> = ({
             </>
           ) : (
             <>
-              <div className="text-2xl font-bold">{safeCurrent.precipitationProb}%</div>
+              <div className="text-2xl font-bold" data-cy="kpi-prob-chuva-valor">
+                {safeCurrent.precipitationProb}%
+              </div>
               <p className="text-xs text-muted-foreground">{safeCurrent.condition}</p>
             </>
           )}

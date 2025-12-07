@@ -37,7 +37,10 @@ export const UsersForm: React.FC<UsersFormProps> = ({
   onCancel,
 }) => {
   return (
-    <Card className="bg-muted/30 border-border animate-in fade-in slide-in-from-top-4">
+    <Card
+      className="bg-muted/30 border-border animate-in fade-in slide-in-from-top-4"
+      data-cy="users-form"
+    >
       <CardHeader>
         <CardTitle>{isEditing ? "Editar Usuário" : "Novo Usuário"}</CardTitle>
       </CardHeader>
@@ -46,7 +49,12 @@ export const UsersForm: React.FC<UsersFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nome Completo</Label>
-              <Input id="name" placeholder="Ex: Ana Costa" {...register("name")} />
+              <Input
+                id="name"
+                placeholder="Ex: Ana Costa"
+                {...register("name")}
+                data-cy="input-user-name"
+              />
               {errors.name && (
                 <span className="text-sm text-red-500">{errors.name.message}</span>
               )}
@@ -54,7 +62,12 @@ export const UsersForm: React.FC<UsersFormProps> = ({
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" placeholder="Ex: ana@email.com" {...register("email")} />
+              <Input
+                id="email"
+                placeholder="Ex: ana@email.com"
+                {...register("email")}
+                data-cy="input-user-email"
+              />
               {errors.email && (
                 <span className="text-sm text-red-500">{errors.email.message}</span>
               )}
@@ -67,6 +80,7 @@ export const UsersForm: React.FC<UsersFormProps> = ({
                 type="password"
                 placeholder={isEditing ? "(Deixe em branco para manter)" : "******"}
                 {...register("password")}
+                data-cy="input-user-password"
               />
               {errors.password && (
                 <span className="text-sm text-red-500">{errors.password.message}</span>
@@ -85,7 +99,7 @@ export const UsersForm: React.FC<UsersFormProps> = ({
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} data-cy="button-submit-user">
               {isEditing
                 ? isSubmitting
                   ? "Salvando..."
