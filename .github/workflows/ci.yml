@@ -20,7 +20,7 @@ jobs:
           MONGO_INITDB_ROOT_USERNAME: admin
           MONGO_INITDB_ROOT_PASSWORD: gdash_secret
         options: >-
-          --health-cmd="mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-cmd="mongosh --eval 'db.adminCommand("ping")'"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -105,7 +105,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run collector tests
+      - name: Run collector unit tests
         working-directory: collector
         env:
           RABBITMQ_URL: amqp://admin:gdash_secret@rabbitmq:5672/
@@ -114,7 +114,18 @@ jobs:
           CITY_LAT: ${{ env.CITY_LAT }}
           CITY_LON: ${{ env.CITY_LON }}
         run: |
-          pytest
+          pytest -m "not integration"
+
+      - name: Run collector integration tests
+        working-directory: collector
+        env:
+          RABBITMQ_URL: amqp://admin:gdash_secret@rabbitmq:5672/
+          QUEUE_NAME: ${{ env.QUEUE_NAME }}
+          CITY_NAME: ${{ env.CITY_NAME }}
+          CITY_LAT: ${{ env.CITY_LAT }}
+          CITY_LON: ${{ env.CITY_LON }}
+        run: |
+          pytest -m integration
 
       - name: Run worker unit tests
         working-directory: worker
