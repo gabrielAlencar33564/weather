@@ -2,8 +2,9 @@
 
 import { defineConfig } from "cypress";
 import * as dotenv from "dotenv";
+import * as path from "path";
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const baseUrl = process.env.FRONTEND_ORIGIN || "";
 const apiUrl = process.env.API_URL_PUBLIC || "";

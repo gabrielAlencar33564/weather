@@ -138,12 +138,13 @@ jobs:
         run: |
           go test -tags=integration ./internal/infra -run TestWorkerIntegration_RabbitMQToAPI -v
 
-      # BACKEND (NestJS)
+      # BACKEND (NestJS) - deps
       - name: Install backend dependencies
         working-directory: backend
         run: |
           npm ci
 
+      # BACKEND (NestJS) - testes unit
       - name: Run backend unit tests
         working-directory: backend
         env:
@@ -156,6 +157,7 @@ jobs:
         run: |
           npm run test:unit
 
+      # BACKEND (NestJS) - testes e2e
       - name: Run backend e2e tests
         working-directory: backend
         env:
@@ -167,6 +169,20 @@ jobs:
           CORS_ORIGIN: ${{ env.FRONTEND_ORIGIN }}
         run: |
           npm run test:e2e
+
+      # BACKEND (NestJS) - subir servidor para o Cypress
+      - name: Start backend server
+        working-directory: backend
+        env:
+          MONGO_URI: mongodb://admin:gdash_secret@localhost:27017/gdash?authSource=admin
+          DEFAULT_ADMIN_EMAIL: ${{ env.DEFAULT_ADMIN_EMAIL }}
+          DEFAULT_ADMIN_PASS: ${{ env.DEFAULT_ADMIN_PASS }}
+          JWT_SECRET: ${{ env.JWT_SECRET }}
+          GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
+          CORS_ORIGIN: ${{ env.FRONTEND_ORIGIN }}
+        run: |
+          npm run start:dev &
+          npx wait-on tcp:3000
 
       # FRONTEND (Vite/React) - deps
       - name: Install frontend dependencies
