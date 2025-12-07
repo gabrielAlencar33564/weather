@@ -29,38 +29,8 @@ jobs:
           RABBITMQ_DEFAULT_PASS: gdash_secret
 
     env:
-      MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
-      MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
-      MONGO_PORT: ${{ secrets.MONGO_PORT }}
-      MONGO_HOST: ${{ secrets.MONGO_HOST }}
-      MONGO_DB: ${{ secrets.MONGO_DB }}
-
-      RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_DEFAULT_USER }}
-      RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_DEFAULT_PASS }}
-      RABBITMQ_PORT: ${{ secrets.RABBITMQ_PORT }}
-      RABBITMQ_UI_PORT: ${{ secrets.RABBITMQ_UI_PORT }}
-      RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
-
-      QUEUE_NAME: ${{ secrets.QUEUE_NAME }}
-
-      CITY_LAT: ${{ secrets.CITY_LAT }}
-      CITY_LON: ${{ secrets.CITY_LON }}
-      CITY_NAME: ${{ secrets.CITY_NAME }}
-
-      API_PORT: ${{ secrets.API_PORT }}
-
-      API_URL_PUBLIC: ${{ secrets.API_URL_PUBLIC }}
-      API_URL_INTERNAL: ${{ secrets.API_URL_INTERNAL }}
-
-      FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
-      FRONTEND_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
-
-      DEFAULT_ADMIN_EMAIL: ${{ secrets.DEFAULT_ADMIN_EMAIL }}
-      DEFAULT_ADMIN_PASS: ${{ secrets.DEFAULT_ADMIN_PASS }}
-
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-
+      MONGO_URI: mongodb://${{ secrets.MONGO_INITDB_ROOT_USERNAME }}:${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}@${{ secrets.MONGO_HOST }}:${{ secrets.MONGO_PORT }}/${{ secrets.MONGO_DB }}?authSource=admin
+      RABBITMQ_URL: amqp://${{ secrets.RABBITMQ_DEFAULT_USER }}:${{ secrets.RABBITMQ_DEFAULT_PASS }}@${{ secrets.RABBITMQ_HOST }}:${{ secrets.RABBITMQ_PORT }}/
       NODE_ENV: test
 
     steps:
@@ -87,115 +57,104 @@ jobs:
           echo "Waiting for Mongo and RabbitMQ to be ready..."
           sleep 25
 
-      # COLLECTOR (Python) - instalar dependencias
       - name: Install collector dependencies
         working-directory: collector
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # COLLECTOR (Python) - testes unitarios (sem marker integration)
       - name: Run collector unit tests
         working-directory: collector
         env:
-          RABBITMQ_URL: amqp://admin:gdash_secret@localhost:5672/
-          QUEUE_NAME: ${{ env.QUEUE_NAME }}
-          CITY_NAME: ${{ env.CITY_NAME }}
-          CITY_LAT: ${{ env.CITY_LAT }}
-          CITY_LON: ${{ env.CITY_LON }}
+          RABBITMQ_URL: ${{ env.RABBITMQ_URL }}
+          QUEUE_NAME: ${{ secrets.QUEUE_NAME }}
+          CITY_NAME: ${{ secrets.CITY_NAME }}
+          CITY_LAT: ${{ secrets.CITY_LAT }}
+          CITY_LON: ${{ secrets.CITY_LON }}
         run: |
           pytest -m "not integration"
 
-      # COLLECTOR (Python) - testes de integracao (marker integration)
       - name: Run collector integration tests
         working-directory: collector
         env:
-          RABBITMQ_URL: amqp://admin:gdash_secret@localhost:5672/
-          QUEUE_NAME: ${{ env.QUEUE_NAME }}
-          CITY_NAME: ${{ env.CITY_NAME }}
-          CITY_LAT: ${{ env.CITY_LAT }}
-          CITY_LON: ${{ env.CITY_LON }}
+          RABBITMQ_URL: ${{ env.RABBITMQ_URL }}
+          QUEUE_NAME: ${{ secrets.QUEUE_NAME }}
+          CITY_NAME: ${{ secrets.CITY_NAME }}
+          CITY_LAT: ${{ secrets.CITY_LAT }}
+          CITY_LON: ${{ secrets.CITY_LON }}
         run: |
           pytest -m integration
 
-      # WORKER (Go) - testes unitarios
       - name: Run worker unit tests
         working-directory: worker
         env:
-          RABBITMQ_URL: amqp://admin:gdash_secret@localhost:5672/
-          QUEUE_NAME: ${{ env.QUEUE_NAME }}
-          API_URL: ${{ env.API_URL_INTERNAL }}
+          RABBITMQ_URL: ${{ env.RABBITMQ_URL }}
+          QUEUE_NAME: ${{ secrets.QUEUE_NAME }}
+          API_URL: ${{ secrets.API_URL_INTERNAL }}
         run: |
           go test ./internal/infra -v
 
-      # WORKER (Go) - testes de integracao
       - name: Run worker integration tests
         working-directory: worker
         env:
-          RABBITMQ_URL: amqp://admin:gdash_secret@localhost:5672/
-          QUEUE_NAME: ${{ env.QUEUE_NAME }}
-          API_URL: ${{ env.API_URL_INTERNAL }}
+          RABBITMQ_URL: ${{ env.RABBITMQ_URL }}
+          QUEUE_NAME: ${{ secrets.QUEUE_NAME }}
+          API_URL: ${{ secrets.API_URL_INTERNAL }}
         run: |
           go test -tags=integration ./internal/infra -run TestWorkerIntegration_RabbitMQToAPI -v
 
-      # BACKEND (NestJS) - deps
       - name: Install backend dependencies
         working-directory: backend
         run: |
           npm ci
 
-      # BACKEND (NestJS) - testes unit
       - name: Run backend unit tests
         working-directory: backend
         env:
-          MONGO_URI: mongodb://admin:gdash_secret@localhost:27017/gdash?authSource=admin
-          DEFAULT_ADMIN_EMAIL: ${{ env.DEFAULT_ADMIN_EMAIL }}
-          DEFAULT_ADMIN_PASS: ${{ env.DEFAULT_ADMIN_PASS }}
-          JWT_SECRET: ${{ env.JWT_SECRET }}
-          GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
-          CORS_ORIGIN: ${{ env.FRONTEND_ORIGIN }}
+          MONGO_URI: ${{ env.MONGO_URI }}
+          DEFAULT_ADMIN_EMAIL: ${{ secrets.DEFAULT_ADMIN_EMAIL }}
+          DEFAULT_ADMIN_PASS: ${{ secrets.DEFAULT_ADMIN_PASS }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CORS_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
         run: |
           npm run test:unit
 
-      # BACKEND (NestJS) - testes e2e
       - name: Run backend e2e tests
         working-directory: backend
         env:
-          MONGO_URI: mongodb://admin:gdash_secret@localhost:27017/gdash?authSource=admin
-          DEFAULT_ADMIN_EMAIL: ${{ env.DEFAULT_ADMIN_EMAIL }}
-          DEFAULT_ADMIN_PASS: ${{ env.DEFAULT_ADMIN_PASS }}
-          JWT_SECRET: ${{ env.JWT_SECRET }}
-          GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
-          CORS_ORIGIN: ${{ env.FRONTEND_ORIGIN }}
+          MONGO_URI: ${{ env.MONGO_URI }}
+          DEFAULT_ADMIN_EMAIL: ${{ secrets.DEFAULT_ADMIN_EMAIL }}
+          DEFAULT_ADMIN_PASS: ${{ secrets.DEFAULT_ADMIN_PASS }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CORS_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
         run: |
           npm run test:e2e
 
-      # BACKEND (NestJS) - subir servidor para o Cypress
       - name: Start backend server
         working-directory: backend
         env:
-          MONGO_URI: mongodb://admin:gdash_secret@localhost:27017/gdash?authSource=admin
-          DEFAULT_ADMIN_EMAIL: ${{ env.DEFAULT_ADMIN_EMAIL }}
-          DEFAULT_ADMIN_PASS: ${{ env.DEFAULT_ADMIN_PASS }}
-          JWT_SECRET: ${{ env.JWT_SECRET }}
-          GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
-          CORS_ORIGIN: ${{ env.FRONTEND_ORIGIN }}
+          MONGO_URI: ${{ env.MONGO_URI }}
+          DEFAULT_ADMIN_EMAIL: ${{ secrets.DEFAULT_ADMIN_EMAIL }}
+          DEFAULT_ADMIN_PASS: ${{ secrets.DEFAULT_ADMIN_PASS }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CORS_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
         run: |
           npm run start:dev &
           npx wait-on tcp:3000
 
-      # FRONTEND (Vite/React) - deps
       - name: Install frontend dependencies
         working-directory: frontend
         run: |
           npm ci
 
-      # FRONTEND (Vite/React) - subir dev server + rodar Cypress
       - name: Run frontend e2e tests (Cypress)
         working-directory: frontend
         env:
-          VITE_API_URL: ${{ env.API_URL_PUBLIC }}
-          VITE_FRONTEND_ORIGIN: ${{ env.FRONTEND_ORIGIN }}
+          VITE_API_URL: ${{ secrets.API_URL_PUBLIC }}
+          VITE_FRONTEND_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
         run: |
           npm run dev -- --host 0.0.0.0 --port 5173 &
           npx wait-on http://localhost:5173
