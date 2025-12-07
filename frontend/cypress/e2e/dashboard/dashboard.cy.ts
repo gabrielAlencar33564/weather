@@ -78,10 +78,14 @@ describe("Dashboard de clima", () => {
       cy.contains("Condição").should("be.visible");
 
       cy.get("tbody tr").then((rows) => {
-        if (rows.length === 1) {
+        const hasNoRows = rows.length === 0;
+        const onlyEmptyStateRow =
+          rows.length === 1 && rows.eq(0).text().includes("Nenhum registro encontrado");
+
+        if (hasNoRows || onlyEmptyStateRow) {
           cy.contains("Nenhum registro encontrado").should("exist");
         } else {
-          cy.get("tbody tr").its("length").should("be.gte", 1);
+          cy.wrap(rows).its("length").should("be.gte", 1);
         }
       });
     });
