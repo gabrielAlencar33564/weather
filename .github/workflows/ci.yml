@@ -41,11 +41,11 @@ jobs:
       RABBITMQ_UI_PORT: ${{ secrets.RABBITMQ_UI_PORT }}
       RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
 
-      QUEUE_NAME: weather_data
+      QUEUE_NAME: ${{ secrets.QUEUE_NAME }}
 
-      CITY_LAT: "-12.51"
-      CITY_LON: "-41.57"
-      CITY_NAME: "Palmeiras - BA"
+      CITY_LAT: ${{ secrets.CITY_LAT }}
+      CITY_LON: ${{ secrets.CITY_LON }}
+      CITY_NAME: ${{ secrets.CITY_NAME }}
 
       API_PORT: 3000
 
