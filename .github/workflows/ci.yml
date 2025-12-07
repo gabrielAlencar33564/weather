@@ -35,11 +35,11 @@ jobs:
       MONGO_HOST: ${{ secrets.MONGO_HOST }}
       MONGO_DB: ${{ secrets.MONGO_DB }}
 
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: gdash_secret
-      RABBITMQ_PORT: 5672
-      RABBITMQ_UI_PORT: 15672
-      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_DEFAULT_USER }}
+      RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_DEFAULT_PASS }}
+      RABBITMQ_PORT: ${{ secrets.RABBITMQ_PORT }}
+      RABBITMQ_UI_PORT: ${{ secrets.RABBITMQ_UI_PORT }}
+      RABBITMQ_HOST: ${{ secrets.RABBITMQ_HOST }}
 
       QUEUE_NAME: weather_data
 
